@@ -38,7 +38,7 @@ class Observation(models.Model):
 	date_modified = models.DateTimeField(auto_now=True)
 
 	name = models.CharField(max_length=255, blank=False, unique=False)
-	some_identifier = models.IntegerField(default=0)
+	some_identifier = models.CharField(max_length=255, blank=False, unique=False)
 
 	def __str__(self):
 		return "{}".format(self.name)
