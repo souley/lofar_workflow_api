@@ -65,35 +65,35 @@ s= requests.Session()
 
 
 # Clean up database
-delete_models("observations")
+#delete_models("observations")
 delete_models("sessions")
-delete_models("pipelineconfigurations")
+#delete_models("pipelineconfigurations")
 
 
-obs_name = "pipodeclouwnnebula"
-pipelineconf_name = "pipeline setup for clown nebula"
+#obs_name = "pipodeclouwnnebula"
+#pipelineconf_name = "pipeline setup for clown nebula"
 
 
 with requests.Session() as s:
 
-	response = s.post('http://localhost:8000/observations/', data={"name": obs_name, "some_identifier": "a catalogue number of some kind"})
-	print('{:*^50}'.format(""))
-	print('{:*^50}'.format("Posting an observation"))
-	print('{:*^50}'.format(""))
-	print("Response code: ", response.status_code)
-	pp.pprint(response.json())
-	obs_id = response.json()["id"]
+	# response = s.post('http://localhost:8000/observations/', data={"name": obs_name, "some_identifier": "a catalogue number of some kind"})
+	# print('{:*^50}'.format(""))
+	# print('{:*^50}'.format("Posting an observation"))
+	# print('{:*^50}'.format(""))
+	# print("Response code: ", response.status_code)
+	# pp.pprint(response.json())
+	# obs_id = response.json()["id"]
 
-	response = s.post('http://localhost:8000/pipelineconfigurations/', data={"name": pipelineconf_name, "some_setting_1": 1.5, "some_setting_2": 3.6 })
-	print('{:*^50}'.format(""))
-	print('{:*^50}'.format("Posting a pipelineconfiguration"))
-	print('{:*^50}'.format(""))
-	print("Response code: ", response.status_code)
-	pp.pprint(response.json())
-	pl_conf_id = response.json()["id"]
+	# response = s.post('http://localhost:8000/pipelineconfigurations/', data={"name": pipelineconf_name, "some_setting_1": 1.5, "some_setting_2": 3.6 })
+	# print('{:*^50}'.format(""))
+	# print('{:*^50}'.format("Posting a pipelineconfiguration"))
+	# print('{:*^50}'.format(""))
+	# print("Response code: ", response.status_code)
+	# pp.pprint(response.json())
+	# pl_conf_id = response.json()["id"]
 
 
-	response = s.post('http://localhost:8000/sessions/', data={"name": "run 1 for clown nebula", "observation": obs_id, "pipeline_conf": pl_conf_id })
+	response = s.post('http://localhost:8000/sessions/', data={"name": "run 1 for clown nebula"})# "observation": obs_id, "pipeline_conf": pl_conf_id 
 	print('{:*^50}'.format(""))
 	print('{:*^50}'.format("Posting a session"))
 	print('{:*^50}'.format(""))
