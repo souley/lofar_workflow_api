@@ -32,48 +32,48 @@ class SessionDetailsView(generics.RetrieveUpdateDestroyAPIView):
 	# if authentication_on:
 	# 	permission_classes= (permissions.IsAuthenticated, IsOwner)
 
-##
-# PipelineConfigurations
-class CreatePipelineConfigurationsView(generics.ListCreateAPIView):
-	"""This class defines the create behaviour of our rest api"""
-	queryset = PipelineConfiguration.objects.all()
-	serializer_class = PipelineConfigurationSerializer
+# ##
+# # PipelineConfigurations
+# class CreatePipelineConfigurationsView(generics.ListCreateAPIView):
+# 	"""This class defines the create behaviour of our rest api"""
+# 	queryset = PipelineConfiguration.objects.all()
+# 	serializer_class = PipelineConfigurationSerializer
 	
-	# if authentication_on:
-	# 	permission_classes = (permissions.IsAuthenticated, IsOwner)
+# 	# if authentication_on:
+# 	# 	permission_classes = (permissions.IsAuthenticated, IsOwner)
 
-	def perform_create(self, serializer):
-		"""Save the post data when creating a new Session"""
-		serializer.save()#owner=self.request.user)
+# 	def perform_create(self, serializer):
+# 		"""Save the post data when creating a new Session"""
+# 		serializer.save()#owner=self.request.user)
 
-class PipelineConfigurationDetailsView(generics.RetrieveUpdateDestroyAPIView):
-	"""This handles the http GET, PUT and DELETE requests"""
+# class PipelineConfigurationDetailsView(generics.RetrieveUpdateDestroyAPIView):
+# 	"""This handles the http GET, PUT and DELETE requests"""
 
-	queryset = PipelineConfiguration.objects.all()
-	serializer_class = PipelineConfigurationSerializer
-	# if authentication_on:
-	# 	permission_classes= (permissions.IsAuthenticated, IsOwner)
+# 	queryset = PipelineConfiguration.objects.all()
+# 	serializer_class = PipelineConfigurationSerializer
+# 	# if authentication_on:
+# 	# 	permission_classes= (permissions.IsAuthenticated, IsOwner)
 
 
-##
-# ObservationData
-class CreateObservationsView(generics.ListCreateAPIView):
-	"""This class defines the create behaviour of our rest api"""
-	queryset = Observation.objects.all()
-	serializer_class = ObservationSerializer
+# ##
+# # ObservationData
+# class CreateObservationsView(generics.ListCreateAPIView):
+# 	"""This class defines the create behaviour of our rest api"""
+# 	queryset = Observation.objects.all()
+# 	serializer_class = ObservationSerializer
 	
-	# if authentication_on:
-	# 	permission_classes = (permissions.IsAuthenticated, IsOwner)
+# 	# if authentication_on:
+# 	# 	permission_classes = (permissions.IsAuthenticated, IsOwner)
 
-	def perform_create(self, serializer):
-		"""Save the post data when creating a new Session"""
-		serializer.save()#owner=self.request.user)
+# 	def perform_create(self, serializer):
+# 		"""Save the post data when creating a new Session"""
+# 		serializer.save()#owner=self.request.user)
 
-class ObservationDetailsView(generics.RetrieveUpdateDestroyAPIView):
-	"""This handles the http GET, PUT and DELETE requests"""
+# class ObservationDetailsView(generics.RetrieveUpdateDestroyAPIView):
+# 	"""This handles the http GET, PUT and DELETE requests"""
 
-	queryset = Observation.objects.all()
-	serializer_class = ObservationSerializer
-	# if authentication_on:
-	# 	permission_classes= (permissions.IsAuthenticated, IsOwner)
+# 	queryset = Observation.objects.all()
+# 	serializer_class = ObservationSerializer
+# 	# if authentication_on:
+# 	# 	permission_classes= (permissions.IsAuthenticated, IsOwner)
 

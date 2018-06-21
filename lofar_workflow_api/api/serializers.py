@@ -9,24 +9,24 @@ class SessionSerializer(serializers.ModelSerializer):
 	class Meta:
 		"""Meta class to map serializer's fields with model fields"""
 		model = Session
-		fields = ('id', 'name', 'pipeline_conf', 'observation', 'date_created', 'date_modified') #'owner', 
+		fields = ('id', 'name', 'date_created', 'date_modified') #'owner', 'pipeline_conf', 'observation', 
 		read_only_field = ('date_created', 'date_modified')
 
-class PipelineConfigurationSerializer(serializers.ModelSerializer):
+# class PipelineConfigurationSerializer(serializers.ModelSerializer):
 
-	#owner = serializers.ReadOnlyField(source = 'owner.username')
+# 	#owner = serializers.ReadOnlyField(source = 'owner.username')
 
-	class Meta:
-		model = PipelineConfiguration
-		fields = ('id', 'name', 'some_setting_1', 'some_setting_2') #'owner', 
-		read_only_field = ('date_created', 'date_modified')
+# 	class Meta:
+# 		model = PipelineConfiguration
+# 		fields = ('id', 'name', 'some_setting_1', 'some_setting_2') #'owner', 
+# 		read_only_field = ('date_created', 'date_modified')
 
 
-class ObservationSerializer(serializers.ModelSerializer):
+# class ObservationSerializer(serializers.ModelSerializer):
 
-	#owner = serializers.ReadOnlyField(source = 'owner.username')
+# 	#owner = serializers.ReadOnlyField(source = 'owner.username')
 
-	class Meta:
-		model = Observation
-		fields = ('id', 'name', 'some_identifier') # 'owner', 
-		read_only_field = ('date_created', 'date_modified')
+# 	class Meta:
+# 		model = Observation
+# 		fields = ('id', 'name', 'some_identifier') # 'owner', 
+# 		read_only_field = ('date_created', 'date_modified')
