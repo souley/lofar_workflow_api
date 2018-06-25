@@ -5,6 +5,7 @@ from .views import *# CreateSessionsView, SessionDetailsView
 urlpatterns = {
 	url(r'^auth/', include('rest_framework.urls',
                                namespace='rest_framework')), 
+	url(r'^sessions$', CreateSessionsView.as_view(), name="create"),
 	url(r'^sessions/$', CreateSessionsView.as_view(), name="create"),
 	url(r'^sessions/(?P<pk>[0-9]+)/$', SessionDetailsView.as_view(), name='details'),
 	# url(r'^pipelineconfigurations/$', CreatePipelineConfigurationsView.as_view(), name="create"),

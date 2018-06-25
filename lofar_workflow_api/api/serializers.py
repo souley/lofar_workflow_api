@@ -10,7 +10,7 @@ class SessionSerializer(serializers.ModelSerializer):
         """Meta class to map serializer's fields with model fields"""
         model = Session
         fields = (\
-            'id', 'name', 'date_created', 'date_modified', 'status', 'pipeline_respone',\
+            'id', 'email', 'description', 'date_created', 'date_modified', 'status', 'pipeline_respone',\
             "avg_freq_step", "avg_time_step", "do_demix", "demix_freq_step", \
             "demix_time_step", "demix_sources", "select_NL", "parset", \
             )

@@ -95,6 +95,7 @@ with requests.Session() as s:
 
 	response = s.post('http://localhost:8000/sessions/', \
 						data={"name": "run 1 for clown nebula",\
+						"email": "pipo@popo.com",
 						"demix_sources":"CygA",
 						})# "observation": obs_id, "pipeline_conf": pl_conf_id 
 	print('{:*^50}'.format(""))
