@@ -5,8 +5,8 @@ class Session(models.Model):
     # API specific properties: 
     name = models.CharField(max_length=255, blank=False, unique=False)
     status = models.CharField(max_length = 20, \
-        choices=(("unknown", "unknown"), ("running", "running"), \
-            ("finished", "finished")), default = "unknown")
+        choices=(("unknown", "unknown"), ("started", "started"), ), \
+        default = "unknown")
     pipeline_respone = models.CharField(max_length = 1000, default = "")
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

@@ -32,7 +32,7 @@ class CreateSessionsView(generics.ListCreateAPIView):
         pipeline_output = "Hij is goed gestart :)"
         ##
         new_session.pipeline_respone = pipeline_output
-        new_session.status = "running"
+        new_session.status = "started"
         new_session.save()
 
 class SessionDetailsView(generics.RetrieveUpdateDestroyAPIView):
