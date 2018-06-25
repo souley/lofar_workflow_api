@@ -4,7 +4,10 @@ from django.db import models
 class Session(models.Model):
     # API specific properties: 
     name = models.CharField(max_length=255, blank=False, unique=False)
-    status = models.CharField(max_length = 20, choices=(("unknown", "unknown"), ("running", "running"), ("finished", "finished")), default = "unknown")
+    status = models.CharField(max_length = 20, \
+        choices=(("unknown", "unknown"), ("running", "running"), \
+            ("finished", "finished")), default = "unknown")
+    pipeline_respone = models.CharField(max_length = 1000, default = "")
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
@@ -19,6 +22,7 @@ class Session(models.Model):
     parset = models.CharField(max_length=7, choices=\
         (("", ""), ("hba_npp", "hba_npp"), ("hba_raw", "hba_raw"), ("lba_npp", "lba_npp"), ("lba_raw", "lba_raw"))\
         , default = "lba_npp") # "PARSET"
+
 
     def __str__(self):
         return "{}".format(self.name)

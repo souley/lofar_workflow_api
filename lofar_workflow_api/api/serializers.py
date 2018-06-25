@@ -14,7 +14,7 @@ class SessionSerializer(serializers.ModelSerializer):
             "avg_freq_step", "avg_time_step", "do_demix", "demix_freq_step", \
             "demix_time_step", "demix_sources", "select_NL", "parset", \
             )
-        read_only_field = ('date_created', 'date_modified', 'status')
+        read_only_field = ('date_created', 'date_modified', 'status', 'pipeline_respone')
 
 # class PipelineConfigurationSerializer(serializers.ModelSerializer):
 
