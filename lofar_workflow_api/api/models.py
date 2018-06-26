@@ -7,7 +7,7 @@ class Session(models.Model):
     description = models.CharField(max_length=1000, default = "")
 
     status = models.CharField(max_length = 20, \
-        choices=(("unknown", "unknown"), ("started", "started"), ), \
+        choices=(("unknown", "unknown"), ("started", "started"), ("failure", "failure") ), \
         default = "unknown")
     pipeline_respone = models.CharField(max_length = 1000, default = "")
     date_created = models.DateTimeField(auto_now_add=True)
