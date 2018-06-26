@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, QueryDict
 from rest_framework import generics, permissions
 from .serializers import *#SessionSerializer
 from .models import *#Session
@@ -27,12 +27,17 @@ class CreateSessionsView(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        data_dict = dict(request.data.dict())
-        data_dict.update({"status":"started"})
 
-        serializer = SessionSerializer(data=data_dict)#request.data)
+        # if isinstance(request.data, QueryDict):
+        #     data_dict = request.data.dict()
+        # elif isinstance(request.data, dict):
+        #     data_dict = request.data
+    
+        # data_dict.update({"status":"started"})
+
+        serializer = SessionSerializer(data=request.data)# (data=data_dict
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(status="started")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
