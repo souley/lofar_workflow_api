@@ -92,16 +92,21 @@ with requests.Session() as s:
 	# pp.pprint(response.json())
 	# pl_conf_id = response.json()["id"]
 
-
+	data = {
+			"email": "pipo@popo.com",
+			"description": "A test pipeline",
+			"pipeline" : "sksp",
+			"config": "{\"avg_freq_stelp\": 1, \"avg_time_step\": 1, \"do_demix\": 1, \"demix_freq_step\": 1, \"demix_time_step\": 1, \"demix_sources\": 1, \"select_NL\": 1,\"parset\": 1}",
+			}
 	response = s.post('http://localhost:8000/sessions/', \
-						data={"name": "run 1 for clown nebula",\
-						"email": "pipo@popo.com",
-						"demix_sources":"CygA",
-						})# "observation": obs_id, "pipeline_conf": pl_conf_id 
+						data=data)# "observation": obs_id, "pipeline_conf": pl_conf_id 
+						#"demix_sources":"CygA",
+						#"config":"{\"test\": 1, \"test2\": \"stringy\"}",
 	print('{:*^50}'.format(""))
 	print('{:*^50}'.format("Posting a session"))
 	print('{:*^50}'.format(""))
 	print("Response code: ", response.status_code)
+	print(response)
 	response_data = response.json()
 	pp.pprint(response_data)
 

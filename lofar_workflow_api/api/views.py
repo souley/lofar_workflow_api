@@ -21,6 +21,20 @@ class CreateSessionsView(APIView):
     """
     List all snippets, or create a new snippet.
     """
+    def check_pipeline_config(self, pipeline, config):
+        implemented_pipelines = {"sksp": ["avg_freq_step", "avg_time_step", "do_demix", "demix_freq_step", "demix_time_step", "demix_sources", "select_NL","parset"],\
+                    }
+
+        if pipeline in implemented_pipelines:
+            print(config.keys())
+            print(implemented_pipelines[pipeline])
+            if list(config.keys()) == implemented_pipelines[pipeline]:
+                return True
+            else:
+                return False
+        else:
+            return False
+
     def get(self, request, format=None):
         sessions = Session.objects.all()
         serializer = SessionSerializer(sessions, many=True)
@@ -28,17 +42,47 @@ class CreateSessionsView(APIView):
 
     def post(self, request, format=None):
 
-        # if isinstance(request.data, QueryDict):
-        #     data_dict = request.data.dict()
-        # elif isinstance(request.data, dict):
-        #     data_dict = request.data
-    
-        # data_dict.update({"status":"started"})
-
         serializer = SessionSerializer(data=request.data)# (data=data_dict
+
+        #if serializer.is_valid():
         if serializer.is_valid():
-            serializer.save(status="started")
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            print("Request", request.data)
+            serializer.save()#status="started")
+            id_session = serializer.data["id"]
+            
+            current_session = Session.objects.get(pk=id_session)
+            
+            ##
+            ## START THE PIPELINE HERE
+            ##
+            pipeline_configured = self.check_pipeline_config(current_session.pipeline, current_session.config)
+            if pipeline_configured:
+                # print()
+                # print("Starting pipeline happens here")
+                # print(current_session)
+                # print("Valid pipeline: ", pipeline_configured)
+                # print("serializer.data", type(serializer.data), serializer.data)
+                current_session.status = "started"
+                current_session.pipeline_respone = "Pipeline started. Pipeline response is: ..."
+                current_session.save()
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)#serializer.data,
+            else:
+                current_session.status = "failure"
+                current_session.pipeline_respone = "Pipeline unknown or pipeline wrongly configured. Nothing was done"
+                current_session.save()
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST) #
+            
+            #serializer.data["status"]="unknown"
+
+            #print(current_session.pipeline)
+            #print(current_session.config)
+            ##
+            ##
+            ##
+
+            
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class CreateSessionsView(generics.ListCreateAPIView):
@@ -50,13 +94,14 @@ class CreateSessionsView(APIView):
 #     #   permission_classes = (permissions.IsAuthenticated, IsOwner)
 
 #     def perform_create(self, serializer):
-#        # print( self.get_queryset() )
-#         #serializer.is_valid()
-#         serializer.save()#owner=self.request.user)
+
 
 #         """ Now start the pipeline """
 #         #new_session = Session.objects.get(pk=serializer.data["id"])
 #         ## START THE PIPELINE HERE
+#         print(self.request.data)
+#         print(serializer.validated_data)
+#         #avg_freq_step = self.request.data["avg_freq_step"]
 #         # ....
 #         # ....
 #         #pipeline_output = "Hij is goed gestart :)"
@@ -67,10 +112,9 @@ class CreateSessionsView(APIView):
 #         #    new_session.status = "started"
 #         #new_session.save()
 
-#         #return JsonResponse(new_session.data)
-
 #         """Save the post data when creating a new Session"""
-#         #serializer.save()#owner=self.request.user)
+#         #if serializer.is_valid():
+#         serializer.save(status="started")#owner=self.request.user)
 
 
 
