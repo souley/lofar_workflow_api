@@ -6,8 +6,9 @@ class Session(models.Model):
     # API specific properties: 
     email = models.CharField(max_length=255, default = "")
     description = models.CharField(max_length=1000, default = "")
-    pipeline = models.CharField(max_length=100, default="sksp")
-    config = JSONField(default={}) #config
+    pipeline = models.CharField(max_length=100)
+    config = JSONField() #config
+    observation = models.CharField(max_length=1000)
 
     status = models.CharField(max_length = 20, \
         choices=(("unknown", "unknown"), ("started", "started"), ("failure", "failure") ), \

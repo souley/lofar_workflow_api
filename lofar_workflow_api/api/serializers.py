@@ -21,8 +21,9 @@ class SessionSerializer(serializers.Serializer):
     
     email = serializers.CharField(required=False, allow_blank=True, max_length=100)
     description = serializers.CharField(max_length=1000, default = "")
-    pipeline = serializers.CharField(max_length=100, default="sksp")
+    pipeline = serializers.CharField(max_length=100)
     config = serializers.JSONField()
+    observation = serializers.CharField(max_length=1000)
 
     status = serializers.CharField(max_length = 20, default = "unknown")
     pipeline_respone = serializers.CharField(max_length = 1000, default = "")
@@ -43,6 +44,7 @@ class SessionSerializer(serializers.Serializer):
         instance.description = validated_data.get('description', instance.description)
         instance.pipeline = validated_data.get('pipeline', instance.pipeline)
         instance.config = validated_data.get('config', instance.config)
+        instance.observation = validated_data.get('observation', instance.observation)
 
         instance.status = validated_data.get('status', instance.status)
         instance.pipeline_response = validated_data.get('pipeline_response', instance.pipeline_response)

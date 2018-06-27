@@ -94,9 +94,10 @@ with requests.Session() as s:
 
 	data = {
 			"email": "pipo@popo.com",
-			"description": "A test pipeline",
-			"pipeline" : "sksp",
-			"config": "{\"avg_freq_stelp\": 1, \"avg_time_step\": 1, \"do_demix\": 1, \"demix_freq_step\": 1, \"demix_time_step\": 1, \"demix_sources\": 1, \"select_NL\": 1,\"parset\": 1}",
+			"description": "",
+			"pipeline" : "LGPPP",
+			"config": "{\"avg_freq_step\": 1, \"avg_time_step\": 1, \"do_demix\": 1, \"demix_freq_step\": 1, \"demix_time_step\": 1, \"demix_sources\": 1, \"select_NL\": 1,\"parset\": 1}",
+			"observation": "somenumber",
 			}
 	response = s.post('http://localhost:8000/sessions/', \
 						data=data)# "observation": obs_id, "pipeline_conf": pl_conf_id 

@@ -22,7 +22,7 @@ class CreateSessionsView(APIView):
     List all snippets, or create a new snippet.
     """
     def check_pipeline_config(self, pipeline, config):
-        implemented_pipelines = {"sksp": ["avg_freq_step", "avg_time_step", "do_demix", "demix_freq_step", "demix_time_step", "demix_sources", "select_NL","parset"],\
+        implemented_pipelines = {"LGPPP": ["avg_freq_step", "avg_time_step", "do_demix", "demix_freq_step", "demix_time_step", "demix_sources", "select_NL","parset"],\
                     }
 
         if pipeline in implemented_pipelines:
