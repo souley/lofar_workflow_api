@@ -10,8 +10,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from .pipeline_administrator import get_available_pipelines
 # PUT THIS ON FOR AUTHENTICATION!!
 authentication_on = False
+
 
 # Create your views here.
 
@@ -22,13 +24,14 @@ class CreateSessionsView(APIView):
     List all snippets, or create a new snippet.
     """
     def check_pipeline_config(self, pipeline, config):
+
+        print (get_available_pipelines())
+
         implemented_pipelines = {"LGPPP": ["avg_freq_step", "avg_time_step", "do_demix", "demix_freq_step", "demix_time_step", "demix_sources", "select_NL","parset"],\
                     }
 
-        if pipeline in implemented_pipelines:
-            print(config.keys())
-            print(implemented_pipelines[pipeline])
-            if list(config.keys()) == implemented_pipelines[pipeline]:
+        if pipeline in get_available_pipelines().keys():
+            if list(config.keys()) == get_available_pipelines()[pipeline].give_argument_names():
                 return True
             else:
                 return False
@@ -57,13 +60,11 @@ class CreateSessionsView(APIView):
             ##
             pipeline_configured = self.check_pipeline_config(current_session.pipeline, current_session.config)
             if pipeline_configured:
-                # print()
-                # print("Starting pipeline happens here")
-                # print(current_session)
-                # print("Valid pipeline: ", pipeline_configured)
-                # print("serializer.data", type(serializer.data), serializer.data)
+
+                ## HERE IS THE MAGIC!
+                current_session.pipeline_respone = get_available_pipelines()[current_session.pipeline].run_pipeline(**current_session.config)
+                ##
                 current_session.status = "started"
-                current_session.pipeline_respone = "Pipeline started. Pipeline response is: ..."
                 current_session.save()
 
                 return Response(serializer.data, status=status.HTTP_201_CREATED)#serializer.data,

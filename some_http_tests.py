@@ -95,7 +95,7 @@ with requests.Session() as s:
 	data = {
 			"email": "pipo@popo.com",
 			"description": "",
-			"pipeline" : "LGPPP",
+			"pipeline" : "LGPPP_LOFAR_pipeline",
 			"config": "{\"avg_freq_step\": 1, \"avg_time_step\": 1, \"do_demix\": 1, \"demix_freq_step\": 1, \"demix_time_step\": 1, \"demix_sources\": 1, \"select_NL\": 1,\"parset\": 1}",
 			"observation": "somenumber",
 			}
