@@ -28,3 +28,6 @@ Check out the jupyter notebook: example_for_lofar_pilot_REST_api.ipynb.
 			}
 	response = s.post('http://localhost:8000/sessions/', data=data)
 ```
+
+## Adding your own pipeline
+Please follow the intructions at the pipeline template python package: https://github.com/EOSC-LOFAR/LOFAR_pipeline_template
