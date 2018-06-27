@@ -1,15 +1,18 @@
 from django.db import models
 from jsonfield import JSONField
 
-# Create your models here.
 class Session(models.Model):
-    # API specific properties: 
+    # Properties describing the user
     email = models.CharField(max_length=255, default = "")
     description = models.CharField(max_length=1000, default = "")
+
+    # Pipeline properties
     pipeline = models.CharField(max_length=100)
     config = JSONField() #config
     observation = models.CharField(max_length=1000)
 
+    # Properties set by the API
+    pipeline_version = models.CharField(max_length=100)
     status = models.CharField(max_length = 20, \
         choices=(("unknown", "unknown"), ("started", "started"), ("failure", "failure") ), \
         default = "unknown")
@@ -17,41 +20,5 @@ class Session(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
-    # # Pipeline configuration properties:
-    # avg_freq_step = models.IntegerField(default=2) # minimum=0. maximum=1000 "AVG_TIME_STEP"
-    # avg_time_step = models.IntegerField(default=4) # minimum=0. maximum=1000 "AVG_TIME_STEP"
-    # do_demix = models.BooleanField(default=True) # "DO_DEMIX"
-    # demix_freq_step = models.IntegerField(default=2) #minimum=0. maximum=1000 "DEMIX_FREQ_STEP"
-    # demix_time_step = models.IntegerField(default=2) # "DEMIX_TIME_STEP"
-    # demix_sources = models.CharField(max_length=4, choices=(("CasA", "CasA"), ("CygA","CygA")), default="CasA") # "DEMIX_SOURCES"
-    # select_NL = models.BooleanField(default=True) #"SELECT_NL"
-    # parset = models.CharField(max_length=7, choices=\
-    #     (("", ""), ("hba_npp", "hba_npp"), ("hba_raw", "hba_raw"), ("lba_npp", "lba_npp"), ("lba_raw", "lba_raw"))\
-    #     , default = "lba_npp") # "PARSET"
-
     def __str__(self):
         return "Printing Session object containing: Pipeline={}, Email={}, config={}, date_created={}, description={}".format(self.pipeline, self.email, self.config, self.date_created, self.description)
-
-# class PipelineConfiguration(models.Model):
-#   # owner = models.ForeignKey('auth.User', related_name = 'pipelineconfigurations', on_delete= models.CASCADE)
-#   date_created = models.DateTimeField(auto_now_add=True)
-#   date_modified = models.DateTimeField(auto_now=True)
-
-#   name = models.CharField(max_length=255, blank=False, unique=False)
-#   some_setting_1 = models.FloatField(default=0)
-#   some_setting_2 = models.FloatField(default=0)
-
-#   def __str__(self):
-#       return "{}".format(self.name)
-
-
-# class Observation(models.Model):
-#   # owner = models.ForeignKey('auth.User', related_name = 'observation', on_delete= models.CASCADE)
-#   date_created = models.DateTimeField(auto_now_add=True)
-#   date_modified = models.DateTimeField(auto_now=True)
-
-#   name = models.CharField(max_length=255, blank=False, unique=False)
-#   some_identifier = models.CharField(max_length=255, blank=False, unique=False)
-
-#   def __str__(self):
-#       return "{}".format(self.name)

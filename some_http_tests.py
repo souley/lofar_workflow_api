@@ -111,12 +111,14 @@ with requests.Session() as s:
 	response_data = response.json()
 	pp.pprint(response_data)
 
-	response = s.get('http://localhost:8000/sessions/'+str(response_data['id'])+"/")# "observation": obs_id, "pipeline_conf": pl_conf_id 
-	print('{:*^50}'.format(""))
-	print('{:*^50}'.format("Getting a session"))
-	print('{:*^50}'.format(""))
-	print("Response code: ", response.status_code)
-	pp.pprint(response.json())
+	if isinstance(response_data, dict):
+		if 'id' in response_data.keys():
+			response = s.get('http://localhost:8000/sessions/'+str(response_data['id'])+"/")# "observation": obs_id, "pipeline_conf": pl_conf_id 
+			print('{:*^50}'.format(""))
+			print('{:*^50}'.format("Getting a session"))
+			print('{:*^50}'.format(""))
+			print("Response code: ", response.status_code)
+			pp.pprint(response.json())
 
 # with requests.Session() as s:
 # 	#s.rebuild_auth
