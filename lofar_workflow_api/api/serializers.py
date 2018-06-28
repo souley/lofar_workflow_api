@@ -2,9 +2,8 @@ from rest_framework import serializers
 from .models import *
 
 class PipelinesSerializer(serializers.Serializer):
+    pipelineschemas = serializers.JSONField()
 
-    pipelines = serializers.JSONField()
-    
 
 class SessionSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -13,7 +12,7 @@ class SessionSerializer(serializers.Serializer):
     description = serializers.CharField(max_length=1000, default = "")
     pipeline = serializers.CharField(max_length=100)
     config = serializers.JSONField()
-    observation = serializers.CharField(max_length=1000)
+    observation = serializers.CharField(max_length=100000)
 
     status = serializers.CharField(max_length = 20, default = "unknown")
     pipeline_version = serializers.CharField(max_length=100, default = "", read_only=True)

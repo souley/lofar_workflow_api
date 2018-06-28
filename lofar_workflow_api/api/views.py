@@ -15,11 +15,14 @@ from .pipeline_administrator import get_available_pipelines
 # Put this on for authentications
 authentication_on = False
 
-
-class PipelinesView(APIView):
-    def get(self, request, format = None):
-        serializer = PipelinesSerializer({"pipelines":get_available_pipelines().keys()})
+class PipelineSchemasView(APIView):
+    def get(self, request, format=None):
+        response_dict = {}
+        for p in get_available_pipelines():
+            response_dict.update( get_available_pipelines()[p].give_config() )
+        serializer = PipelinesSerializer({"pipelineschemas":response_dict})
         return Response(serializer.data)
+
 ##
 # Sessions
 class CreateSessionsView(APIView):
@@ -27,10 +30,9 @@ class CreateSessionsView(APIView):
     # This function checks if the given pipeline name and config are
     # valid
     def check_pipeline_config(self, pipeline, config):
+
         if pipeline in get_available_pipelines().keys():
-            print(set(config.keys()))
-            print(get_available_pipelines()[pipeline].give_argument_names())
-            if set(config.keys()) == get_available_pipelines()[pipeline].give_argument_names():
+            if set(config.keys()) == set(get_available_pipelines()[pipeline].give_argument_names()):
                 return True
             else:
                 return False

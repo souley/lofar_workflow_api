@@ -95,8 +95,8 @@ with requests.Session() as s:
 	data = {
 			"email": "pipo@popo.com",
 			"description": "",
-			"pipeline" : "LGPPP_LOFAR_pipeline",
-			"config": "{\"avg_freq_step\": 1, \"avg_time_step\": 1, \"do_demix\": 1, \"demix_freq_step\": 1, \"demix_time_step\": 1, \"demix_sources\": 1, \"select_NL\": 1,\"parset\": 1}",
+			"pipeline" : "LGPPP",
+			"config": "{\"avg_freq_step\": 1, \"avg_time_step\": 1, \"do_demix\": 1, \"demix_freq_step\": 1, \"demix_time_step\": 1, \"demix_sources\": 1, \"select_nl\": 1,\"parset\": 1}",
 			"observation": "somenumber",
 			}
 	response = s.post('http://localhost:8000/sessions/', \
@@ -121,7 +121,7 @@ with requests.Session() as s:
 			pp.pprint(response.json())
 
 
-	response = s.get('http://localhost:8000/pipelines/')
+	response = s.get('http://localhost:8000/pipelineschemas/')
 	print('{:*^50}'.format(""))
 	print('{:*^50}'.format("Getting pipeline info"))
 	print('{:*^50}'.format(""))
