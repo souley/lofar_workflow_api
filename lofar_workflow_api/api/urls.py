@@ -8,6 +8,8 @@ urlpatterns = {
     url(r'^sessions$', CreateSessionsView.as_view(), name="create"),
     url(r'^sessions/$', CreateSessionsView.as_view(), name="create"),
     url(r'^sessions/(?P<pk>[0-9]+)/$', SessionDetailsView.as_view(), name='details'),
+    url(r'^pipelines$', PipelinesView.as_view(), name='pipelines'),
+    url(r'^pipelines/$', PipelinesView.as_view(), name='pipelines'),
 }
 
 urlpatterns = format_suffix_patterns(urlpatterns)

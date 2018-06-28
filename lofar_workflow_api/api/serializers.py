@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import *
 
+class PipelinesSerializer(serializers.Serializer):
+
+    pipelines = serializers.JSONField()
+    
+
 class SessionSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     

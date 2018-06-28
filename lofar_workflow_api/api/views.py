@@ -15,6 +15,11 @@ from .pipeline_administrator import get_available_pipelines
 # Put this on for authentications
 authentication_on = False
 
+
+class PipelinesView(APIView):
+    def get(self, request, format = None):
+        serializer = PipelinesSerializer({"pipelines":get_available_pipelines().keys()})
+        return Response(serializer.data)
 ##
 # Sessions
 class CreateSessionsView(APIView):

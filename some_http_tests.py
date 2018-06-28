@@ -120,6 +120,16 @@ with requests.Session() as s:
 			print("Response code: ", response.status_code)
 			pp.pprint(response.json())
 
+
+	response = s.get('http://localhost:8000/pipelines/')
+	print('{:*^50}'.format(""))
+	print('{:*^50}'.format("Getting pipeline info"))
+	print('{:*^50}'.format(""))
+	print("Response code: ", response.status_code)
+	print(response)
+	response_data = response.json()
+	pp.pprint(response_data)
+
 # with requests.Session() as s:
 # 	#s.rebuild_auth
 # 	print('http://localhost:8000/observations/'+str(response.json()["id"])+'/')
