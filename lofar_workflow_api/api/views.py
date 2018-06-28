@@ -28,7 +28,9 @@ class CreateSessionsView(APIView):
     # valid
     def check_pipeline_config(self, pipeline, config):
         if pipeline in get_available_pipelines().keys():
-            if list(config.keys()) == get_available_pipelines()[pipeline].give_argument_names():
+            print(set(config.keys()))
+            print(get_available_pipelines()[pipeline].give_argument_names())
+            if set(config.keys()) == get_available_pipelines()[pipeline].give_argument_names():
                 return True
             else:
                 return False
@@ -55,7 +57,7 @@ class CreateSessionsView(APIView):
 
                 ## The pipeline is executed here
                 current_session.pipeline_respone = \
-                    get_available_pipelines()[current_session.pipeline].run_pipeline(**current_session.config)
+                    get_available_pipelines()[current_session.pipeline].run_pipeline(current_session.observation, **current_session.config)
 
                 current_session.pipeline_version = get_available_pipelines()[current_session.pipeline].give_version()
                 current_session.status = "started"

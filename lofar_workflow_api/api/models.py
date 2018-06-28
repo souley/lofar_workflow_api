@@ -9,7 +9,7 @@ class Session(models.Model):
     # Pipeline properties
     pipeline = models.CharField(max_length=100)
     config = JSONField() #config
-    observation = models.CharField(max_length=1000)
+    observation = models.CharField(max_length=100000)
 
     # Properties set by the API
     pipeline_version = models.CharField(max_length=100)
