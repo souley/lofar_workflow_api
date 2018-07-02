@@ -45,6 +45,7 @@ Check out the jupyter notebook: example_for_lofar_pilot_REST_api.ipynb.
 ## Current models in the api
 
 * Session: a session that will run a pipeline on an observation
+* pipelineschemas: this gives you a list with implemented pipelines and configuration schemas.
 * A post of a session using the request package could look like this:
 ```python
 	data = {
@@ -56,6 +57,14 @@ Check out the jupyter notebook: example_for_lofar_pilot_REST_api.ipynb.
 			}
 	response = s.post('http://localhost:8000/sessions/', data=data)
 ```
+* You can do a get to pipelineschemas to get a json with pipelines and their schemas like this: 
+```python
+	response = s.get('http://localhost:8000/pipelineschemas/')
+	response_data = response.json()
+	pp.pprint(response_data)
+
+```
+
 
 ## Adding your own pipeline
 
