@@ -11,6 +11,6 @@ python_version = "3.*"
 [packages]
 django = "*"
 djangorestframework = "*"
-LRT = {ref = "master", git = "https://hspreeuw@bitbucket.org/hspreeuw/eoscpfl-lgppp_lrt_2018.git"}
-# lgppp-lofar-pipeline = {ref = "master", git = "https://github.com/EOSC-LOFAR/LGPPP_LOFAR_pipeline.git"}
+# LRT = {ref = "master", git = "https://hspreeuw@bitbucket.org/hspreeuw/eoscpfl-lgppp_lrt_2018.git"}
+lgppp-lofar-pipeline = {ref = "master", git = "https://github.com/EOSC-LOFAR/LGPPP_LOFAR_pipeline.git"}
 jsonfield = "*"
