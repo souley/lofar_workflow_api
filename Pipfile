@@ -9,6 +9,7 @@ python_version = "3.*"
 [dev-packages]
 
 [packages]
+couchdb = "*"
 django = "*"
 djangorestframework = "*"
 # LRT = {ref = "master", git = "https://hspreeuw@bitbucket.org/hspreeuw/eoscpfl-lgppp_lrt_2018.git"}
