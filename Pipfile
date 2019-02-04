@@ -12,6 +12,5 @@ verify_ssl = true
 couchdb = "*"
 django = "*"
 djangorestframework = "*"
-lofar-lta-one-click-processing = {ref = "master", git = "https://github.com/process-project/lofar-lta-one-click-processing.git"}
-# lgppp-lofar-pipeline = {ref = "master", git = "https://github.com/EOSC-LOFAR/LGPPP_LOFAR_pipeline.git"}
+lgppp_lrt = {ref = "master", git = "https://github.com/process-project/LGPPP_LRT.git"}
 jsonfield = "*"
