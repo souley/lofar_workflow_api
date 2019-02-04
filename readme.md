@@ -1,4 +1,4 @@
-# Readme for LOFAR pipeline REST Api
+# Readme for LOFAR pipeline REST API
 
 This project has been continued as part of [PROCESS](https://github.com/process-project/lofar_workflow_api).
 
