@@ -1,5 +1,7 @@
 # Readme for LOFAR pipeline REST Api
 
+This project has been continued as part of [PROCESS](https://github.com/process-project/lofar_workflow_api).
+
 This is an experiment to see if we can make the LOFAR data more accessible.
 This is a django REST api using the django rest_framework. 
 
