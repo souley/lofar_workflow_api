@@ -1,3 +1,6 @@
 __pycache__
 __pycache__/*
 .ipynb_checkpoints
+**/.DS_Store
+lofar_workflow_api/api/migrations/**
+

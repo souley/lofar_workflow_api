@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [requires]
-# python_version = ">3.3"
+python_version = ">3.3"
 
 [dev-packages]
 
@@ -12,6 +12,10 @@ verify_ssl = true
 couchdb = "*"
 django = "*"
 djangorestframework = "*"
-eoscpfl-lgppp_lrt_2018 = {ref = "master", git = "https://hspreeuw@bitbucket.org/hspreeuw/eoscpfl-lgppp_lrt_2018.git"}
-# lgppp-lofar-pipeline = {ref = "master", git = "https://github.com/EOSC-LOFAR/LGPPP_LOFAR_pipeline.git"}
+lgppp-lofar-pipeline = {ref = "master",git = "https://github.com/EOSC-LOFAR/LGPPP_LOFAR_pipeline.git"}
 jsonfield = "*"
+prefactor-lofar-pipeline = {ref = "master", git = "https://github.com/souley/PROCESS-UC2.git"}
+requests = "*"
+channels = "*"
+django-fontawesome = "*"
+pillow = "*"

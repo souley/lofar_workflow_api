@@ -13,12 +13,16 @@ class Session(models.Model):
 
     # Properties set by the API
     pipeline_version = models.CharField(max_length=100)
+#    status = models.CharField(max_length = 20, \
+#        choices=(("unknown", "unknown"), ("started", "started"), ("failure", "failure") ), \
+#        default = "unknown")
     status = models.CharField(max_length = 20, \
-        choices=(("unknown", "unknown"), ("started", "started"), ("failure", "failure") ), \
-        default = "unknown")
-    pipeline_respone = models.CharField(max_length = 1000, default = "")
+                          choices=(("Waiting", "Waiting"), ("Running", "Running"), ("Success", "Success"), ("Cancelled", "Cancelled"),  ("PermanentFailure", "PermanentFailure"), ("SystemError", "SystemError"), ("TemporaryFailure", "TemporaryFailure")), \
+                          default = "Waiting")
+    pipeline_response = models.CharField(max_length = 1000, default = "")
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    di_image = models.ImageField(upload_to='images')
 
     def __str__(self):
         return "Printing Session object containing: Pipeline={}, Email={}, config={}, date_created={}, description={}".format(self.pipeline, self.email, self.config, self.date_created, self.description)
