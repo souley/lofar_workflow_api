@@ -23,6 +23,7 @@ from PIL import Image
 from django.conf import settings
 
 from rest_framework.renderers import TemplateHTMLRenderer
+from fabric import Connection
 
 # Put this on for authentications
 authentication_on = False
@@ -188,6 +189,15 @@ class SessionView(APIView):
         #        print(res.content)
         res_data = json.loads(res.content.decode("utf8"))
         session.status = res_data['state']
+        print('===session status', session.status)
+        if session.status == 'Success' and session.di_fits == '':
+            fits_base = 'P23wsclean' + str(session.id) + '.fits'
+            local_fits = settings.MEDIA_ROOT + '/' + fits_base
+            session.di_fits = settings.MEDIA_URL +fits_base
+            remote_fits = '/var/scratch/madougou/LOFAR/PROCESS/P23-wsclean-image.fits'
+            xenon_cr = 'madougou@fs0.das5.cs.vu.nl'
+            reslog = Connection(xenon_cr).get(remote=remote_fits, local=local_fits)
+            print("Downloaded {0.local} from {0.remote}".format(reslog))
 
         session.save()
         return session
@@ -212,8 +222,3 @@ def job(request, jobid):
 #                  'jobid': mark_safe(json.dumps(request.data))
                   })
 
-class ImageDetails(APIView):
-    def get(self, request, pk, format=None):
-        session = self.get_object(request, pk)
-        serializer = SessionSerializer(session)
-        return Response(serializer.data['di_image'])

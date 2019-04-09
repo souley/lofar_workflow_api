@@ -24,7 +24,9 @@ class SessionSerializer(serializers.Serializer):
     date_created = serializers.DateTimeField(read_only=True)
     date_modified = serializers.DateTimeField(read_only=True)
     
-    di_image = serializers.ImageField(required=False)
+    #    di_image = serializers.ImageField(required=False)
+    di_fits = serializers.CharField(max_length=100, default = "")
+
 
     def create(self, validated_data):
         return Session.objects.create(**validated_data)
@@ -43,7 +45,7 @@ class SessionSerializer(serializers.Serializer):
         instance.date_created = validated_data.get('date_created', instance.date_created)
         instance.date_modified = validated_data.get('date_modified', instance.date_modified)
         
-        instance.di_image = validated_data.get('di_image', instance.di_image)
+        instance.di_fits = validated_data.get('di_fits', instance.di_fits)
 
         instance.save()
         return instance

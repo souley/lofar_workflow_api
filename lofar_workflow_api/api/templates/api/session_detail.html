@@ -13,7 +13,7 @@
  
  <script type="text/javascript">
      var fits = new FITS();
-     
+     var fits_file = "{{ session.di_fits }}"
      // Define the stretch function to apply e.g. linear, sqrt, cuberoot, log, loglog, sqrtlog
      fits.stretch = "log";
      // Bind some events
@@ -25,14 +25,14 @@
                        e.y = this.height - e.y
                        var value =this.image[e.y*this.width+e.x];
                        document.getElementById('status').innerHTML ='move=('+ e.x+','+e.y+')='+value;
-                       }).bind("load",function(){
-                               document.getElementById('bitpix').innerHTML = this.header.BITPIX;
-                               document.getElementById('depth').innerHTML = this.depth;
-                               document.getElementById('z').value = 0;
-                               this.draw("FITSimage")
-                               })
+                }).bind("load",function(){
+                        document.getElementById('bitpix').innerHTML = this.header.BITPIX;
+                        document.getElementById('depth').innerHTML = this.depth;
+                        document.getElementById('z').value = 0;
+                        this.draw("FITSimage")
+                })
                                
-                               fits.load("/static/js/P23-wsclean-image.fits");
+                fits.load(fits_file);
      </script>
     
     <style>
@@ -59,7 +59,7 @@
         <!--input type="submit" value="Save"-->
     </form>
     
-    <h1>FITS extraction with Javascript</h1>
+    <!--h1>FITS extraction with Javascript</h1-->
     
     File: <select name="FITS" onChange="fits.load(this.value)">
         <option selected>WFPC2u5780205r_c0fx.fits</option>
@@ -77,7 +77,7 @@
     </select>
     
     Color: <select name="scale" onChange="fits.update({color:this.value})">
-        <option selected="selected">heat</option>
+        <option selected="selected">gray</option>
         <option>heat</option>
         <option>A</option>
         <option>B</option>
