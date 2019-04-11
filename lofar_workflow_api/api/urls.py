@@ -15,7 +15,7 @@ urlpatterns = {
     url(r'^pipelineschemas$', PipelineSchemasView.as_view(), name='pipelineschemas'),
     url(r'^pipelineschemas/$', PipelineSchemasView.as_view(), name='pipelineschemas'),
 #    path('api/<slug:jobid>/', views.job, name='jobState'),
-    url(r'^api/(?P<jobid>[-\w]+)/$', views.job, name='jobid'),
+#    url(r'^api/(?P<jobid>[-\w]+)/$', views.job, name='jobid'),
 }
 
 urlpatterns = format_suffix_patterns(urlpatterns)

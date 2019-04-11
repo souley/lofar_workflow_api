@@ -135,4 +135,5 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'lofar_workflow_api/images'
 #ASGI_APPLICATION = 'lofar_workflow_api.routing.application'
 
 # fontawesome
-FONTAWESOME_CSS_URL = 'api/fontawesome/css/font-awesome.min.css'
+#FONTAWESOME_CSS_URL = 'api/fontawesome/css/font-awesome.min.css'
+FONTAWESOME_CSS_URL = 'https://use.fontawesome.com/releases/v5.8.1/css/all.css'

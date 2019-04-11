@@ -16,9 +16,9 @@ from . import views
 import json
 import requests
 
-from .consumers import jobState
+#from .consumers import jobState
 import tempfile
-from PIL import Image
+#from PIL import Image
 
 from django.conf import settings
 
@@ -214,16 +214,16 @@ class SessionView(APIView):
         return Response({'serializer': serializer, 'session': session})
 
     
-def job(request, jobid):
-#    print('===views.job request.data: ', request)
-    global initState
-    print('===views.job initState: ', initState, '\t,jobState: ', jobState)
-    jobStatus = initState
-    if jobStatus != jobState:
-        jobStatus = jobState
-    return render(request, 'api/job.html', {
-                  'jobid': jobid,
-                  'jobState': jobStatus
-#                  'jobid': mark_safe(json.dumps(request.data))
-                  })
+#def job(request, jobid):
+##    print('===views.job request.data: ', request)
+#    global initState
+#    print('===views.job initState: ', initState, '\t,jobState: ', jobState)
+#    jobStatus = initState
+#    if jobStatus != jobState:
+#        jobStatus = jobState
+#    return render(request, 'api/job.html', {
+#                  'jobid': jobid,
+#                  'jobState': jobStatus
+##                  'jobid': mark_safe(json.dumps(request.data))
+#                  })
 

@@ -16,7 +16,5 @@ lgppp-lofar-pipeline = {ref = "master",git = "https://github.com/EOSC-LOFAR/LGPP
 jsonfield = "*"
 prefactor-lofar-pipeline = {ref = "master", git = "https://github.com/souley/PROCESS-UC2.git"}
 requests = "*"
-channels = "*"
 django-fontawesome = "*"
-pillow = "*"
 fabric = "*"
