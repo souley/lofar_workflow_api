@@ -2,93 +2,60 @@
 {% load rest_framework %}
 
 <head>
-    <title>Javascript FITS Viewer</title>
+    <title>Session Viewer</title>
     
-    <script type="text/javascript" src="{% static 'js/binaryajax.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/excanvas.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/fits.js' %}"></script>
-    
-    <script type="text/javascript" src="{% static 'js/jquery-1.6.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/fitsviewer.js' %}"></script>
- 
- <script type="text/javascript">
-     var fits = new FITS();
-     var fits_file = "{{ session.di_fits }}"
-     // Define the stretch function to apply e.g. linear, sqrt, cuberoot, log, loglog, sqrtlog
-     fits.stretch = "log";
-     // Bind some events
-     fits.bind("click",function(e){
-               e.y = this.height - e.y
-               var value =this.image[e.y*this.width+e.x];
-               document.getElementById('status').innerHTML ='click=('+ e.x+','+e.y+')='+value;
-               }).bind("mousemove",function(e){
-                       e.y = this.height - e.y
-                       var value =this.image[e.y*this.width+e.x];
-                       document.getElementById('status').innerHTML ='move=('+ e.x+','+e.y+')='+value;
-                }).bind("load",function(){
-                        document.getElementById('bitpix').innerHTML = this.header.BITPIX;
-                        document.getElementById('depth').innerHTML = this.depth;
-                        document.getElementById('z').value = 0;
-                        this.draw("FITSimage")
-                })
-                               
-                fits.load(fits_file);
+    <script type="text/javascript">
+     function draw() {
+         // Loop through all images
+         for (var i = 0; i < document.images.length; i++) {
+            // Create canvas element
+            canvas = document.createElement('canvas');
+            canvas.setAttribute('width', 700);
+            canvas.setAttribute('height', 740);
+            // Insert before the image
+            document.images[i].parentNode.insertBefore(canvas,document.images[i]);
+            ctx = canvas.getContext('2d');
+            // Draw image to canvas
+            ctx.drawImage(document.images[i], 15, 20);
+         }
+     }
      </script>
     
     <style>
         body {
+            background: 0 -100px repeat-x #FFFFFF;
             margin: 10px;
-            font-family: Arial, sans-serif;
-            background-color: white;
-            color: black;
         }
-    a { color: #5555aa; }
-    canvas { border: 1px solid #ff0000; }
-    code { color: #5555aa; }
-    pre { color: #5555aa; }
-        </style>
+    
+        img {
+            display: none;
+        }
+    
+        table {
+            margin: 0 auto;
+        }
+    
+        td {
+            padding: 15px;
+        }
+    </style>
 </head>
 
-<html><body>
+<html><body onload="draw();">
     
-    <h1>Session - {{ session.id }}</h1>
+    <h1>Session ID: {{ session.id }}</h1>
     
-    <form action="{% url 'session-details' session.id %}" method="GET">
-        {% csrf_token %}
-        {% render_form serializer %}
-        <!--input type="submit" value="Save"-->
-    </form>
-    
-    <!--h1>FITS extraction with Javascript</h1-->
-    
-    File: <select name="FITS" onChange="fits.load(this.value)">
-        <option selected>WFPC2u5780205r_c0fx.fits</option>
-        <option>l_e_20110215_205_1_1_1.fits</option>
-        <option>l_e_20110215_203_1_1_1.fits</option>
-    </select><!-- or <input type="file" name="localfile" onSubmit="return false" onChange="fits.load(this.value)">-->
-    
-    Scaling function: <select name="scale" onChange="fits.update(this.value)">
-        <option>linear</option>
-        <option>sqrt</option>
-        <option>cuberoot</option>
-        <option selected="selected">log</option>
-        <option>sqrtlog</option>
-        <option>loglog</option>
-    </select>
-    
-    Color: <select name="scale" onChange="fits.update({color:this.value})">
-        <option selected="selected">gray</option>
-        <option>heat</option>
-        <option>A</option>
-        <option>B</option>
-    </select>
-    
-    Frame <button onClick="fits.update({index:--(document.getElementById('z').value)})">&lt;</button>
-    <input id="z" name="z" value="0" size=3 onChange="fits.update({index:this.value})">
-        <button onClick="fits.update({index:++(document.getElementById('z').value)})">&gt;</button> of <span id=depth></span>. Format: <span id=bitpix></span>.
-        <span id="status"></span>
-        <br>
-        <canvas id="FITSimage"></canvas>
+    <h3>Observation: {{ session.observation }}</h3>
 
+    <h3>Xenon-flow Job ID: {{ session.pipeline_response }}</h3>
+    
+    <h3>Xenon-flow Job Status: {{ session.status }}</h3>
+    
+    <table>
+        <tr>
+            <td><img src="{{ session.rw_fits }}"></td>
+            <td><img src="{{ session.di_fits }}"></td>
+        </tr>
+    </table>
 
 </body></html>

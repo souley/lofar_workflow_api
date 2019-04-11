@@ -26,6 +26,7 @@ class SessionSerializer(serializers.Serializer):
     
     #    di_image = serializers.ImageField(required=False)
     di_fits = serializers.CharField(max_length=100, default = "")
+    rw_fits = serializers.CharField(max_length=100, default = "")
 
 
     def create(self, validated_data):
@@ -46,6 +47,7 @@ class SessionSerializer(serializers.Serializer):
         instance.date_modified = validated_data.get('date_modified', instance.date_modified)
         
         instance.di_fits = validated_data.get('di_fits', instance.di_fits)
+        instance.rw_fits = validated_data.get('rw_fits', instance.rw_fits)
 
         instance.save()
         return instance

@@ -23,6 +23,7 @@ class Session(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     di_fits = models.CharField(max_length=100, default = "")
+    rw_fits = models.CharField(max_length=100, default = "")
 
     def __str__(self):
         return "Printing Session object containing: Pipeline={}, Email={}, config={}, date_created={}, description={}".format(self.pipeline, self.email, self.config, self.date_created, self.description)

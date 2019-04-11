@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
-    'channels',
+#    'channels',
     'fontawesome'
 ]
 
@@ -132,7 +132,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'lofar_workflow_api/images')
 
 # Channels
-ASGI_APPLICATION = 'lofar_workflow_api.routing.application'
+#ASGI_APPLICATION = 'lofar_workflow_api.routing.application'
 
 # fontawesome
 FONTAWESOME_CSS_URL = 'api/fontawesome/css/font-awesome.min.css'
