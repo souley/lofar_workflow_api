@@ -17,13 +17,18 @@ import json
 import requests
 
 #from .consumers import jobState
-import tempfile
+#import tempfile
 #from PIL import Image
 
 from django.conf import settings
 
 from rest_framework.renderers import TemplateHTMLRenderer
 from fabric import Connection
+
+# For converting FITS images to JPEG
+import matplotlib
+matplotlib.use('Agg')
+import aplpy
 
 # Put this on for authentications
 authentication_on = False
@@ -190,19 +195,39 @@ class SessionView(APIView):
         res_data = json.loads(res.content.decode("utf8"))
         session.status = res_data['state']
         print('===session status', session.status)
-#        if session.status == 'Success' and session.di_fits == '':
-#            fits_base = 'P23wsclean' + str(session.id) + '.fits'
-#            local_fits = settings.MEDIA_ROOT + '/' + fits_base
+        if session.status == 'Success': # and session.di_fits == '':
+            fits_base = 'P23wsclean' + str(session.id) + '.fits'
+            local_fits = settings.MEDIA_ROOT + '/' + fits_base
 #            session.di_fits = settings.MEDIA_URL +fits_base
-#            remote_fits = '/var/scratch/madougou/LOFAR/PROCESS/P23-wsclean-image.fits'
-#            xenon_cr = 'madougou@fs0.das5.cs.vu.nl'
-#            reslog = Connection(xenon_cr).get(remote=remote_fits, local=local_fits)
-#            print("Downloaded {0.local} from {0.remote}".format(reslog))
-        if session.status == 'Success':
-            di_base = 'P23wsclean' + str(session.id) + '.jpeg'
-            session.di_fits = settings.MEDIA_URL +di_base
-            rw_base = 'P23uncal' + str(session.id) + '.jpeg'
-            session.rw_fits = settings.MEDIA_URL +rw_base
+            remote_fits = '/var/scratch/madougou/LOFAR/PROCESS/P23-wsclean-image.fits'
+            xenon_cr = 'madougou@fs0.das5.cs.vu.nl'
+            reslog = Connection(xenon_cr).get(remote=remote_fits, local=local_fits)
+            print("Downloaded {0.local} from {0.remote}".format(reslog))
+            fig = aplpy.FITSFigure(local_fits)
+            fig.show_colorscale(cmap='gist_heat')
+            fig.tick_labels.hide()
+            fig.ticks.hide()
+            fig.save(local_fits.replace('.fits', '.jpeg'))
+            session.di_fits = settings.MEDIA_URL +fits_base.replace('.fits', '.jpeg')
+            # Same thing for uncalibrated image
+            fits_base = 'P23uncal' + str(session.id) + '.fits'
+            local_fits = settings.MEDIA_ROOT + '/' + fits_base
+#            session.di_fits = settings.MEDIA_URL +fits_base
+            remote_fits = '/var/scratch/madougou/LOFAR/PROCESS/imguncal/P23-uncal-image.fits'
+            xenon_cr = 'madougou@fs0.das5.cs.vu.nl'
+            reslog = Connection(xenon_cr).get(remote=remote_fits, local=local_fits)
+            print("Downloaded {0.local} from {0.remote}".format(reslog))
+            fig = aplpy.FITSFigure(local_fits)
+            fig.show_colorscale(cmap='gist_heat')
+            fig.tick_labels.hide()
+            fig.ticks.hide()
+            fig.save(local_fits.replace('.fits', '.jpeg'))
+            session.rw_fits = settings.MEDIA_URL +fits_base.replace('.fits', '.jpeg')
+#        if session.status == 'Success':
+#            di_base = 'P23wsclean' + str(session.id) + '.jpeg'
+#            session.di_fits = settings.MEDIA_URL +di_base
+#            rw_base = 'P23uncal' + str(session.id) + '.jpeg'
+#            session.rw_fits = settings.MEDIA_URL +rw_base
 
         session.save()
         return session

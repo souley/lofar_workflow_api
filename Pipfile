@@ -18,3 +18,5 @@ prefactor-lofar-pipeline = {ref = "master", git = "https://github.com/souley/PRO
 requests = "*"
 django-fontawesome = "*"
 fabric = "*"
+matplotlib = "*"
+aplpy = "*"
