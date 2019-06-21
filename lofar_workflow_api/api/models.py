@@ -13,17 +13,20 @@ class Session(models.Model):
 
     # Properties set by the API
     pipeline_version = models.CharField(max_length=100)
-#    status = models.CharField(max_length = 20, \
-#        choices=(("unknown", "unknown"), ("started", "started"), ("failure", "failure") ), \
-#        default = "unknown")
     status = models.CharField(max_length = 20, \
-                          choices=(("Waiting", "Waiting"), ("Running", "Running"), ("Success", "Success"), ("Cancelled", "Cancelled"),  ("PermanentFailure", "PermanentFailure"), ("SystemError", "SystemError"), ("TemporaryFailure", "TemporaryFailure")), \
-                          default = "Waiting")
+                          choices=(("Staging", "Staging"), ("Transferring", "Transferring"), ("Waiting", "Waiting"), ("Running", "Running"), ("Success", "Success"), ("Cancelled", "Cancelled"),  ("PermanentFailure", "PermanentFailure"), ("SystemError", "SystemError"), ("TemporaryFailure", "TemporaryFailure")), \
+                          default = "Staging")
+    staging = models.CharField(max_length = 20, \
+                                   choices=(("new", "new"), ("scheduled", "scheduled"), ("inprogress", "inprogress"), ("completed", "completed"), ("onhold", "onhold") ), \
+                                   default = "new")
+
     pipeline_response = models.CharField(max_length = 1000, default = "")
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     di_fits = models.CharField(max_length=100, default = "")
     rw_fits = models.CharField(max_length=100, default = "")
+    
+    stage_reqid = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return "Printing Session object containing: Pipeline={}, Email={}, config={}, date_created={}, description={}".format(self.pipeline, self.email, self.config, self.date_created, self.description)

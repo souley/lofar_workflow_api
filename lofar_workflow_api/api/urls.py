@@ -14,6 +14,7 @@ urlpatterns = {
     url(r'^sessions/(?P<pk>[0-9]+)/$', SessionView.as_view(), name='session-details'),
     url(r'^pipelineschemas$', PipelineSchemasView.as_view(), name='pipelineschemas'),
     url(r'^pipelineschemas/$', PipelineSchemasView.as_view(), name='pipelineschemas'),
+    url(r'^sessions/(?P<pk>[0-9]+)/(?P<reqid>[0-9]{5})/$', TransferView.as_view(), name='staging'),
 #    path('api/<slug:jobid>/', views.job, name='jobState'),
 #    url(r'^api/(?P<jobid>[-\w]+)/$', views.job, name='jobid'),
 }

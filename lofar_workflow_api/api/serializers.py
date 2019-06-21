@@ -17,8 +17,8 @@ class SessionSerializer(serializers.Serializer):
     config = serializers.JSONField()
     observation = serializers.CharField(max_length=100000)
 
-#    status = serializers.CharField(max_length = 20, default = "unknown")
-    status = serializers.CharField(max_length = 20, default = "Waiting")
+    status = serializers.CharField(max_length = 20, default = "Staging")
+    staging = serializers.CharField(max_length = 20, default = "new")
     pipeline_version = serializers.CharField(max_length=100, default = "", read_only=True)
     pipeline_response = serializers.CharField(max_length = 1000, default = "")
     date_created = serializers.DateTimeField(read_only=True)
@@ -27,6 +27,8 @@ class SessionSerializer(serializers.Serializer):
     #    di_image = serializers.ImageField(required=False)
     di_fits = serializers.CharField(max_length=100, default = "")
     rw_fits = serializers.CharField(max_length=100, default = "")
+#    stageid = serializers.CharField(max_length=30, default = "")
+    stage_reqid = serializers.IntegerField(default = 0)
 
 
     def create(self, validated_data):
@@ -42,12 +44,16 @@ class SessionSerializer(serializers.Serializer):
         instance.pipeline_version = validated_data.get('pipeline_version', instance.pipeline_version)
         instance.pipeline_response = validated_data.get('pipeline_response', instance.pipeline_response)
         instance.status = validated_data.get('status', instance.status)
+        instance.staging = validated_data.get('staging', instance.staging)
 
         instance.date_created = validated_data.get('date_created', instance.date_created)
         instance.date_modified = validated_data.get('date_modified', instance.date_modified)
         
         instance.di_fits = validated_data.get('di_fits', instance.di_fits)
         instance.rw_fits = validated_data.get('rw_fits', instance.rw_fits)
-
+        
+#        instance.stageid = validated_data.get('stageid', instance.stageid)
+        instance.stage_reqid = validated_data.get('stage_reqid', instance.stage_reqid)
+        
         instance.save()
         return instance

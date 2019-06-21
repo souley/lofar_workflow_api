@@ -42,14 +42,24 @@ class PipelineSchemasView(APIView):
         serializer = PipelinesSerializer({"pipelineschemas":response_dict})
         return Response(serializer.data)
 
+
+class TransferView(APIView):
+    def get(self, request, reqid, format=None):
+        print("===TransferView::get data=", request.data)
+        return Response(request.data)
+    
+    def post(self, request, reqid, format=None):
+        print("===TransferView::post data=", request.data)
+        return Response(request.data)
+
 ##
 # Sessions
 class CreateSessionsView(APIView):
-
+    
     # This function checks if the given pipeline name and config are
     # valid
     def check_pipeline_config(self, pipeline, config):
-
+        
         if pipeline in get_available_pipelines().keys():
             if set(config.keys()) == set(get_available_pipelines()[pipeline].give_argument_names()):
                 return True
@@ -62,35 +72,36 @@ class CreateSessionsView(APIView):
         sessions = Session.objects.all()
         serializer = SessionSerializer(sessions, many=True)
         return Response(serializer.data)
-
+    
     def post(self, request, format=None):
-
+        
         serializer = SessionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            print('===Session data from api.views.py')
             id_session = serializer.data["id"]
-            
+            print(id_session)
             current_session = Session.objects.get(pk=id_session)
             
             pipeline_configured = self.check_pipeline_config(current_session.pipeline, current_session.config)
             if pipeline_configured:
-
+                
                 ## The pipeline is executed here
                 pipeline_res = \
                     get_available_pipelines()[current_session.pipeline].run_pipeline(current_session.observation, **current_session.config)
-                
-                print('===Session data from api.views.py')
-                print(pipeline_res.content)
+            
+#                print('===Session data from api.views.py')
+                print(pipeline_res.content) # = b'{"id": "staging", "requestId": 58241}'
                 res_data = json.loads(pipeline_res.content.decode("utf8"))
-                current_session.pipeline_response = res_data['id']
+#                current_session.stageid = res_data['id']
                 current_session.pipeline_version = get_available_pipelines()[current_session.pipeline].give_version()
-                current_session.status = res_data['state']
-#                current_session.status = "started"
+                current_session.stage_reqid = res_data['requestId']
+                #                current_session.status = "started"
                 current_session.save()
-#                res_data = json.loads(current_session.pipeline_response.content.decode("utf8"))
-#                global initState
-#                initState = res_data['state']
-#                print('===api.views initState=', initState)
+                #                res_data = json.loads(current_session.pipeline_response.content.decode("utf8"))
+                #                global initState
+                #                initState = res_data['state']
+                #                print('===api.views initState=', initState)
                 new_ser = SessionSerializer(current_session)
                 return Response(new_ser.data, status=status.HTTP_201_CREATED)
             else:
@@ -101,6 +112,67 @@ class CreateSessionsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
+###
+## Sessions: used to work before staging
+#class CreateSessionsView(APIView):
+#
+#    # This function checks if the given pipeline name and config are
+#    # valid
+#    def check_pipeline_config(self, pipeline, config):
+#
+#        if pipeline in get_available_pipelines().keys():
+#            if set(config.keys()) == set(get_available_pipelines()[pipeline].give_argument_names()):
+#                return True
+#            else:
+#                return False
+#        else:
+#            return False
+#
+#    def get(self, request, format=None):
+#        sessions = Session.objects.all()
+#        serializer = SessionSerializer(sessions, many=True)
+#        return Response(serializer.data)
+#
+#    def post(self, request, format=None):
+#
+#        serializer = SessionSerializer(data=request.data)
+#        if serializer.is_valid():
+#            serializer.save()
+#            id_session = serializer.data["id"]
+#
+#            current_session = Session.objects.get(pk=id_session)
+#
+#            pipeline_configured = self.check_pipeline_config(current_session.pipeline, current_session.config)
+#            if pipeline_configured:
+#
+#                ## The pipeline is executed here
+#                pipeline_res = \
+#                    get_available_pipelines()[current_session.pipeline].run_pipeline(current_session.observation, **current_session.config)
+#
+#                print('===Session data from api.views.py')
+#                print(pipeline_res.content) # = b'{"id": "staging", "requestId": 58241}'
+#                res_data = json.loads(pipeline_res.content.decode("utf8"))
+#                current_session.pipeline_response = res_data['id']
+#                current_session.pipeline_version = get_available_pipelines()[current_session.pipeline].give_version()
+#                current_session.status = res_data['state']
+##                current_session.status = "started"
+#                current_session.save()
+##                res_data = json.loads(current_session.pipeline_response.content.decode("utf8"))
+##                global initState
+##                initState = res_data['state']
+##                print('===api.views initState=', initState)
+#                new_ser = SessionSerializer(current_session)
+#                return Response(new_ser.data, status=status.HTTP_201_CREATED)
+#            else:
+#                current_session.delete()
+#                return Response("Pipeline unknown or pipeline wrongly configured. Nothing was done", \
+#                                status=status.HTTP_400_BAD_REQUEST)
+#
+#        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+#
 
 
 class SessionDetailsView(generics.RetrieveUpdateDestroyAPIView):
@@ -169,10 +241,107 @@ class SessionDetails(APIView):
         session.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+#### Old (before staging) working version
+#class SessionView(APIView):
+#    renderer_classes = [TemplateHTMLRenderer]
+#    template_name = 'api/session_detail.html'
+#
+#    """
+#        Retrieve, update or delete a session instance.
+#    """
+#    def get_object(self, pk):
+#        session = None
+#        try:
+#            session = Session.objects.get(pk=pk)
+#        except Session.DoesNotExist:
+#            raise Http404
+#        # Update status from Xenon-flow server
+#        print('=SessionDetails::get_object() pp res: ', session.pipeline_response)
+#        url = 'http://localhost:8443/jobs/' + session.pipeline_response
+#        headers = {
+#            'Content-Type': 'application/json',
+#            'api-key': 'in1uP28Y1Et9YGp95VLYzhm5Jgd5M1r0CKI7326RHwbVcHGa'
+#        }
+#        data = {}
+#        res = requests.get(url, headers=headers, data=json.dumps(data))
+#        #        print(res.content)
+#        res_data = json.loads(res.content.decode("utf8"))
+#        session.status = res_data['state']
+#        print('===session status', session.status)
+#        if session.status == 'Success': # and session.di_fits == '':
+#            fits_base = 'P23wsclean' + str(session.id) + '.fits'
+#            local_fits = settings.MEDIA_ROOT + '/' + fits_base
+#            remote_fits = '/var/scratch/madougou/LOFAR/prefactor_output/P23-wsclean-image.fits'
+#            xenon_cr = 'madougou@fs0.das5.cs.vu.nl'
+#            reslog = Connection(xenon_cr).get(remote=remote_fits, local=local_fits)
+#            print("Downloaded {0.local} from {0.remote}".format(reslog))
+#            fig = aplpy.FITSFigure(local_fits)
+#            fig.show_colorscale(cmap='gist_heat')
+#            fig.tick_labels.hide()
+#            fig.ticks.hide()
+#            fig.save(local_fits.replace('.fits', '.jpeg'))
+#            session.di_fits = settings.MEDIA_URL +fits_base.replace('.fits', '.jpeg')
+#            # Same thing for uncalibrated image
+#            fits_base = 'P23uncal' + str(session.id) + '.fits'
+#            local_fits = settings.MEDIA_ROOT + '/' + fits_base
+#            remote_fits = '/var/scratch/madougou/LOFAR/PROCESS/imguncal/P23-uncal-image.fits'
+#            xenon_cr = 'madougou@fs0.das5.cs.vu.nl'
+#            reslog = Connection(xenon_cr).get(remote=remote_fits, local=local_fits)
+#            print("Downloaded {0.local} from {0.remote}".format(reslog))
+#            fig = aplpy.FITSFigure(local_fits)
+#            fig.show_colorscale(cmap='gist_heat')
+#            fig.tick_labels.hide()
+#            fig.ticks.hide()
+#            fig.save(local_fits.replace('.fits', '.jpeg'))
+#            session.rw_fits = settings.MEDIA_URL +fits_base.replace('.fits', '.jpeg')
+#
+#        session.save()
+#        return session
+#
+#
+#    def get(self, request, pk, format=None):
+#        session = self.get_object(pk)
+#        serializer = SessionSerializer(session)
+#        return Response({'serializer': serializer, 'session': session})
+#
+#
+
+### Staging version
 class SessionView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'api/session_detail.html'
 
+    """
+        Get staging status
+    """
+    def get_staging_state(self, session):
+        staging_state = ""
+        url = session.config["staging"]["url"] + '/status'
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        #        print('=SessionView::get_object() pp cfg: ', session.config)
+        data = {
+            "cmd": {
+                "requestId": session.stage_reqid,
+                "credentials": {
+                    "lofarUsername": session.config["staging"]["login"],
+                    "lofarPassword": session.config["staging"]["pwd"]
+                }
+            }
+        }
+        #        print("=SessionView::get_object() req data", data)
+        res = requests.post(url, headers=headers, data=json.dumps(data))
+        #        print(res.content)
+        res_data = json.loads(res.content.decode("utf8"))
+        print(res_data)
+        staging_id = str(session.stage_reqid)
+        if res_data:
+            staging_state = res_data[staging_id]["status"]
+            print("=SessionView::get_object() staging status: ", staging_state)
+        return staging_state
+
+    
     """
         Retrieve, update or delete a session instance.
     """
@@ -182,73 +351,184 @@ class SessionView(APIView):
             session = Session.objects.get(pk=pk)
         except Session.DoesNotExist:
             raise Http404
-        # Update status from Xenon-flow server
-        print('=SessionDetails::get_object() pp res: ', session.pipeline_response)
-        url = 'http://localhost:8443/jobs/' + session.pipeline_response
-        headers = {
-            'Content-Type': 'application/json',
-            'api-key': 'in1uP28Y1Et9YGp95VLYzhm5Jgd5M1r0CKI7326RHwbVcHGa'
-        }
-        data = {}
-        res = requests.get(url, headers=headers, data=json.dumps(data))
-        #        print(res.content)
-        res_data = json.loads(res.content.decode("utf8"))
-        session.status = res_data['state']
-        print('===session status', session.status)
-        if session.status == 'Success': # and session.di_fits == '':
-            fits_base = 'P23wsclean' + str(session.id) + '.fits'
-            local_fits = settings.MEDIA_ROOT + '/' + fits_base
-#            session.di_fits = settings.MEDIA_URL +fits_base
-            remote_fits = '/var/scratch/madougou/LOFAR/PROCESS/P23-wsclean-image.fits'
-            xenon_cr = 'madougou@fs0.das5.cs.vu.nl'
-            reslog = Connection(xenon_cr).get(remote=remote_fits, local=local_fits)
-            print("Downloaded {0.local} from {0.remote}".format(reslog))
-            fig = aplpy.FITSFigure(local_fits)
-            fig.show_colorscale(cmap='gist_heat')
-            fig.tick_labels.hide()
-            fig.ticks.hide()
-            fig.save(local_fits.replace('.fits', '.jpeg'))
-            session.di_fits = settings.MEDIA_URL +fits_base.replace('.fits', '.jpeg')
-            # Same thing for uncalibrated image
-            fits_base = 'P23uncal' + str(session.id) + '.fits'
-            local_fits = settings.MEDIA_ROOT + '/' + fits_base
-#            session.di_fits = settings.MEDIA_URL +fits_base
-            remote_fits = '/var/scratch/madougou/LOFAR/PROCESS/imguncal/P23-uncal-image.fits'
-            xenon_cr = 'madougou@fs0.das5.cs.vu.nl'
-            reslog = Connection(xenon_cr).get(remote=remote_fits, local=local_fits)
-            print("Downloaded {0.local} from {0.remote}".format(reslog))
-            fig = aplpy.FITSFigure(local_fits)
-            fig.show_colorscale(cmap='gist_heat')
-            fig.tick_labels.hide()
-            fig.ticks.hide()
-            fig.save(local_fits.replace('.fits', '.jpeg'))
-            session.rw_fits = settings.MEDIA_URL +fits_base.replace('.fits', '.jpeg')
-#        if session.status == 'Success':
-#            di_base = 'P23wsclean' + str(session.id) + '.jpeg'
-#            session.di_fits = settings.MEDIA_URL +di_base
-#            rw_base = 'P23uncal' + str(session.id) + '.jpeg'
-#            session.rw_fits = settings.MEDIA_URL +rw_base
-
+        staging_state = self.get_staging_state(session)
+        if staging_state == "completed" or not staging_state:
+            session.staging = "completed"
+#            session.status = "Transferring"
         session.save()
         return session
 
 
+    """
+        Do transfer to HPC when staging completes
+    """
+    def transfer_data(self, session):
+        print("=SessionView::do_transfer() staging complete, start transferring ...")
+#        webhook = "http://localhost:8000/sessions/" + str(session.id) + "/" + str(session.stage_reqid)
+        webhook = "http://93b304c0.ngrok.io"
+#        srmuris = ["srm://srm.grid.sara.nl:8443/pnfs/grid.sara.nl/data/lofar/ops/projects/lofarschool/246403/L246403_SAP000_SB000_uv.MS_7d4aa18f.tar"]
+        tarfiles = session.observation.split("|")
+        srmuris = tarfiles # [ tarfiles[0] ] # testing
+        url = 'http://145.100.130.7:32015/execute'
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        hpc_cfg = session.config["hpc"]
+        data = {
+            "id": "transfer",
+            "cmd": {
+                "type": "copy",
+                "subtype": "srm2hpc",
+                "src": {
+                    "type": "srm",
+                    "paths": srmuris
+                },
+                "dest": {
+                    "type": "hpc",
+                    "host": hpc_cfg["headnode"],
+                    "path": hpc_cfg["path"]
+                },
+                "credentials": {
+                    "srmCertificate": hpc_cfg["srmcert"],
+                    "hpcUsername": hpc_cfg["login"],
+                    "hpcPassword": hpc_cfg["pwd"]
+                }
+            },
+            "webhook": {
+                "method": "post",
+                "url": webhook,
+                "headers": {}
+            },
+            "options": {}
+        }
+        res = requests.post(url, headers=headers, data=json.dumps(data))
+        res_data = json.loads(res.content.decode("utf8"))
+        print(res_data)
+
+
+    """
+        Checks whether transfer has completed
+    """
+    def is_transfer_complete(self, session):
+        print("=SessionView::is_transfer_complete() ...")
+#        url = "http://localhost:8000/sesssions/" + str(session.id) +  "/" + str(session.stage_reqid)
+        url = "http://eaa0f304.ngrok.io"
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        data = {}
+        #        print("=SessionView::is_transfer_complete() req data", data)
+        res = requests.post(url, headers=headers, data=json.dumps(data))
+        print(res.content)
+        if res.content == b'':
+            return True
+        return False
+#        res_data = json.loads(res.content.decode("utf8"))
+#        print(res_data)
+#        srmuris = session.observation.split("|")
+#        if res_data and set(res_data["surls"]) == set(srmuris):
+#            session.status = "Waiting"
+#            session.save()
+#            return True
+#        return False
+
+
+    """
+        Send request to Xenon-flow to start SLURM job(s) on HPC
+    """
+    def start_computation(self, session):
+        url = '/jobs'
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        data = {
+            "input": {}
+        }
+        cfg = session.config
+        url = cfg["hpc"]["xenon"] + url
+        headers["api-key"] = cfg["hpc"]["apikey"]
+        data["name"] = cfg["workflow"]
+        data["workflow"] = cfg["cwl"]
+
+        res = requests.post(url, headers=headers, data=json.dumps(data))
+        res_data = json.loads(res.content.decode("utf8"))
+    #    print("===xenon job id: ", res_data["id"])
+        res_val = res_data["id"]
+        return res_val
+
+
+    """
+        Checks whether job has completed successfully
+    """
+    def is_job_done(self, session):
+        print('=SessionView::is_job_done() pp res: ', session.pipeline_response)
+        url = 'http://localhost:8443/jobs/' + session.pipeline_response
+        cfg = session.config
+        headers = {
+            'Content-Type': 'application/json',
+            'api-key': cfg["hpc"]["apikey"]
+        }
+        data = {}
+        print("SessionView::is_job_done url=", url)
+        print("SessionView::is_job_done header=", headers)
+        res = requests.get(url, headers=headers, data=json.dumps(data))
+        print(res.content)
+        res_data = json.loads(res.content.decode("utf8"))
+        session.status = res_data['state']
+        print('===session status', session.status)
+        print(res_data)
+        if session.status == "Success":
+            session.save()
+            return True
+        return False
+
+
+    """
+        Convert fetched FITS images into JPEG for browsing
+    """
+    def fetch_convert(self, session, base, raw=False):
+        fits_base = base + str(session.id) + '.fits'
+        local_fits = settings.MEDIA_ROOT + '/' + fits_base
+        remote_fits = '/var/scratch/madougou/LOFAR/prefactor_output/' + base + '.fits'
+        if raw:
+            remote_fits = '/var/scratch/madougou/LOFAR/PROCESS/imguncal/' + base + '.fits'
+        xenon_cr = 'madougou@fs0.das5.cs.vu.nl'
+        reslog = Connection(xenon_cr).get(remote=remote_fits, local=local_fits)
+        print("Downloaded {0.local} from {0.remote}".format(reslog))
+        fig = aplpy.FITSFigure(local_fits)
+        fig.show_colorscale(cmap='gist_heat')
+        fig.tick_labels.hide()
+        fig.ticks.hide()
+        fig.save(local_fits.replace('.fits', '.jpeg'))
+        return fits_base.replace('.fits', '.jpeg')
+
+
+    """
+        Fetch results after job has completed successfully
+    """
+    def postprocess(self, session):
+        session.di_fits = settings.MEDIA_URL + self.fetch_convert(session, 'P23-wsclean-image')
+        session.rw_fits = settings.MEDIA_URL + self.fetch_convert(session, 'P23-uncal-image', True)
+        session.save()
+
+    
+    """
+        Handles HTTP GET method
+    """
     def get(self, request, pk, format=None):
         session = self.get_object(pk)
+        if session.staging == "completed":
+            if session.status != "Transferring":
+                session.status = "Transferring"
+                self.transfer_data(session)
+                session.save()
+            elif self.is_transfer_complete(session):
+                if not session.pipeline_response:
+                    session.pipeline_response = self.start_computation(session)
+                    session.save()
+                elif self.is_job_done(session):
+                    self.postprocess(session)
         serializer = SessionSerializer(session)
         return Response({'serializer': serializer, 'session': session})
 
-    
-#def job(request, jobid):
-##    print('===views.job request.data: ', request)
-#    global initState
-#    print('===views.job initState: ', initState, '\t,jobState: ', jobState)
-#    jobStatus = initState
-#    if jobStatus != jobState:
-#        jobStatus = jobState
-#    return render(request, 'api/job.html', {
-#                  'jobid': jobid,
-#                  'jobState': jobStatus
-##                  'jobid': mark_safe(json.dumps(request.data))
-#                  })
 
